@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swiggy Order Search</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input[type="text"] {
+            padding: 10px;
+            width: 70%;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .search-bar button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #ff6600;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .search-bar button:hover {
+            background-color: #e65c00;
+        }
+
+        .order-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .order-header h2 {
+            margin: 0;
+            color: #333;
+        }
+
+        .order-header .order-cost {
+            font-size: 18px;
+            color: #ff6600;
+        }
+
+        .order-meta {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 10px;
+        }
+
+        .order-items {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .order-items li {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .order-items li .item-name {
+            font-weight: bold;
+        }
+
+        .order-items li .item-quantity {
+            font-style: italic;
+        }
+
+        .order-rating {
+            margin-top: 10px;
+            color: #333;
+        }
+
+        .order-rating .rating-value {
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Swiggy Order Search</h1>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Enter restaurant name or item">
+        </div>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let debounceTimeout = null;
+
+        function fetchResults(query) {
+            fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `query=${query}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = '';
+
+                if (data.length === 0) {
+                    resultsDiv.innerHTML = '<p>No matching orders found.</p>';
+                } else {
+                    data.forEach(order => {
+                        const orderDiv = document.createElement('div');
+                        orderDiv.className = 'order-card';
+
+                        // Creating order header
+                        const orderHeader = `
+                            <div class="order-header">
+                                <h2>${order.restaurant_name}</h2>
+                                <span class="order-cost">Cost: ₹${order.cost}</span>
+                            </div>
+                        `;
+
+                        // Creating order metadata
+                        const orderMeta = `
+                            <div class="order-meta">
+                                <p>Order ID: ${order.order_id}</p>
+                                <p>Date Ordered: ${order.date_ordered}</p>
+                            </div>
+                        `;
+
+                        // Creating order items list
+                        const orderItemsList = order.order_items.map(item => `
+                            <li>
+                                <span class="item-name">${item.name}</span>
+                                <span class="item-quantity">x ${item.quantity}</span>
+                            </li>
+                        `).join('');
+
+                        const orderItems = `
+                            <ul class="order-items">
+                                ${orderItemsList}
+                            </ul>
+                        `;
+
+                        // Creating order rating
+                        const orderRating = `
+                            <div class="order-rating">
+                                <span class="rating-value">Rating: ${order.restaurant_rating}</span>
+                            </div>
+                        `;
+
+                        orderDiv.innerHTML = orderHeader + orderMeta + orderItems + orderRating;
+                        resultsDiv.appendChild(orderDiv);
+                    });
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function debounce(func, delay) {
+            return function(...args) {
+                clearTimeout(debounceTimeout);
+                debounceTimeout = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+
+        document.getElementById('searchInput').addEventListener('input', debounce(function() {
+            const query = this.value.trim();
+            if (query.length > 0) {
+                fetchResults(query);
+            } else {
+                document.getElementById('results').innerHTML = '';
+            }
+        }, 300)); // 300ms debounce delay
+    </script>
+</body>
+</html>

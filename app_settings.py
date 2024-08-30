@@ -1,0 +1,4 @@
+HEADERS_COOKIE = "__SW=B2lDi_zPtH-LLNHWd8hyhmzrQXz_VMen; _device_id=dc9734f3-5c5e-bed2-9102-3bdeb6b58bcb; _ot=REGULAR; _is_logged_in=1; _session_tid=2bdb6695a6ce6bd5dac3ab256219b0507bc1393ed7de0009cfb83acfc430ae6fb86c7cc0011596deeaaa388f0cdb91df394f977f83cbf1df1ee27d36fd3ae2602194faa4c99d5175996e31f1e699d79d1bb83b62c37160b751d5b753ed60e90328671c7d45c4b2e9e19ff5054b5c0db1; fontsLoaded=1; userLocation=%7B%22lat%22%3A%2228.4293547%22%2C%22lng%22%3A%2277.0860769%22%2C%22address%22%3A%22Sector%2057%20Road%2C%20Sector%2057%2C%20Gurugram%2C%20Haryana%20122001%2C%20India%20(OYO%20Townhouse%20184%20)%22%2C%22area%22%3A%22OYO%20Townhouse%20184%22%2C%22id%22%3A%22cnhfhrubu222eno90fog%22%2C%22showUserDefaultAddressHint%22%3Afalse%7D; _sid=fr777d41-ae4f-4d74-aa2d-74e429706427; pdfcc=8"
+HEADERS_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
+SWIGGY_URL = "https://www.swiggy.com/dapi/order/all"
+
