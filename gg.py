@@ -23,7 +23,7 @@ def fetch_orders(max_orders, last_order_id=''):
                         {key: item[key] for key in ['name', 'quantity'] if key in item} for item in order["order_items"]
                     ],
                     "cost": order["order_total"],
-                    "date_ordered": order["payment_txn_created_on"],
+                    "date_ordered": order["order_time"],
                     "restaurant_rating": order["rating_meta"]["restaurant_rating"]["rating"]
                 })
             last_order_id = str(orders[-1]["order_id"])
