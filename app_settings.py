@@ -1,4 +1,0 @@
-HEADERS_COOKIE = "__SW=JYEuWxcfzcH6G5ngFBlEjS6Dk2DeexRy; _device_id=ade7f658-9858-abdd-f04a-efac027c4575; fontsLoaded=1; _ot=REGULAR; _is_logged_in=1; _session_tid=68862ffc66634fc64636233b1a27e699c6ff369243a79e750acedf1489ba2e5502ddee5783f26f01ba5c67a2a51ad2cfd0d91be3915464dd96a8d23d792321d9ffe923d190ae653db58f772adfe2bdf98049f1195d678d0755660f165ba798860edb7625e7f7e1b19a4100c117639ff9; userLocation=%7B%22lat%22%3A%2228.4293547%22%2C%22lng%22%3A%2277.0860769%22%2C%22address%22%3A%22Sector%2057%20Road%2C%20Sector%2057%2C%20Gurugram%2C%20Haryana%20122001%2C%20India%20(OYO%20Townhouse%20184%20)%22%2C%22area%22%3A%22OYO%20Townhouse%20184%22%2C%22id%22%3A%22cnhfhrubu222eno90fog%22%2C%22showUserDefaultAddressHint%22%3Afalse%7D; adl=true; _sid=gwb57d85-319f-4006-bd5c-f16fbc149dca"
-HEADERS_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
-SWIGGY_URL = "https://www.swiggy.com/dapi/order/all"
-
