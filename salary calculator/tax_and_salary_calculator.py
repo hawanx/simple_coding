@@ -20,14 +20,14 @@ def calculate_tax(salary):
     # Calculate net monthly salary
     net_monthly_salary = net_annual_salary / 12
 
-    return total_tax, net_annual_salary, net_monthly_salary
+    return total_tax, net_annual_salary, net_monthly_salaryw
 
 
 import requests
 
-monthly_salary = 95733*1.17
+monthly_salary = 110000
 epf_amount = 1800
-lwf = 34
+lwf = 0
 
 total_salary = monthly_salary
 annual_salary = 12 * total_salary

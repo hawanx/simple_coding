@@ -5,7 +5,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-order_dict = fetch_orders(200)
+order_dict = fetch_orders(250)
 print(len(order_dict))
 # start_date = datetime.strptime("2024-10-07", "%Y-%m-%d")
 # end_date = datetime.strptime("2024-10-17", "%Y-%m-%d")
