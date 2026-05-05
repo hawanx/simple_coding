@@ -1,4 +1,4 @@
-from tax_and_salary_calculator import calculate_tax
+from app import calculate_tax
 
 standard_deduction = 75000
 epf = 1800

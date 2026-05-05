@@ -1,4 +1,5 @@
 import json
+import requests
 
 standard_deduction = 75000 # fixed
 
@@ -22,8 +23,6 @@ def calculate_tax(salary):
 
     return total_tax, net_annual_salary, net_monthly_salary
 
-
-import requests
 
 monthly_salary = 135511
 epf_amount = 1800
