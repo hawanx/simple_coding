@@ -67,5 +67,39 @@
         {% endif %}
     </div>
 
+<script>
+    const STORAGE_KEY = 'salary_calc_data';
+    const EXPIRY_DAYS = 30;
+
+    // 1. Page load par data recover karo
+    window.onload = function() {
+        const rawData = localStorage.getItem(STORAGE_KEY);
+        if (rawData) {
+            const data = JSON.parse(rawData);
+            const now = new Date().getTime();
+
+            // Check expiry (30 din = 30 * 24 * 60 * 60 * 1000 ms)
+            if (now - data.timestamp < EXPIRY_DAYS * 24 * 60 * 60 * 1000) {
+                document.getElementsByName('monthly_salary')[0].value = data.salary;
+                document.getElementsByName('epf')[0].value = data.epf;
+                document.getElementsByName('lwf')[0].value = data.lwf;
+            } else {
+                localStorage.removeItem(STORAGE_KEY);
+            }
+        }
+    };
+
+    // 2. Form submit par data save karo
+    document.querySelector('form').onsubmit = function() {
+        const data = {
+            salary: document.getElementsByName('monthly_salary')[0].value,
+            epf: document.getElementsByName('epf')[0].value,
+            lwf: document.getElementsByName('lwf')[0].value,
+            timestamp: new Date().getTime()
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    };
+</script>
+
 </body>
 </html>
