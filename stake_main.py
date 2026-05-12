@@ -9,10 +9,12 @@ import requests
 TOKEN = "8286212832:AAFs3G2lLoxidU_CP6HtGpRKU9d_Vfa0-yg"
 CHAT_ID = "-1003905826881"
 
+# Memory to store the last sent rates
+last_sent_data = {"t1_rate": None, "t2_rate": None, "match": None}
+
 
 def send_telegram_msg(message):
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-    # Is baar hum 'HTML' parse_mode use kar rahe hain formatting ke liye
     payload = {"chat_id": CHAT_ID, "text": message, "parse_mode": "HTML"}
     try:
         requests.post(url, json=payload)
@@ -21,27 +23,24 @@ def send_telegram_msg(message):
 
 
 def scrape_stake_rates():
+    global last_sent_data
     options = uc.ChromeOptions()
     driver = uc.Chrome(options=options)
     url = "https://stake.ac/sports/cricket/india/indian-premier-league"
 
     try:
         driver.get(url)
-        print("Scraping started... Formatting set to Premium Style.")
+        print("Bot is running... Monitoring for price changes.")
         time.sleep(10)
 
         while True:
             try:
                 wait = WebDriverWait(driver, 15)
-                # Latest match container
-                match = wait.until(
+                match_container = wait.until(
                     EC.presence_of_element_located((By.CSS_SELECTOR, 'div[data-testid="fixture-preview"]')))
-
-                # Team buttons
-                buttons = match.find_elements(By.CSS_SELECTOR, 'button[data-testid="fixture-outcome"]')
+                buttons = match_container.find_elements(By.CSS_SELECTOR, 'button[data-testid="fixture-outcome"]')
 
                 if len(buttons) >= 2:
-                    # Data Extraction
                     t1_name = buttons[0].find_element(By.CSS_SELECTOR,
                                                       'span[data-testid="outcome-button-name"]').text.strip()
                     t1_rate = buttons[0].find_element(By.CSS_SELECTOR, 'span[strong="true"]').text.strip()
@@ -50,31 +49,50 @@ def scrape_stake_rates():
                                                       'span[data-testid="outcome-button-name"]').text.strip()
                     t2_rate = buttons[1].find_element(By.CSS_SELECTOR, 'span[strong="true"]').text.strip()
 
-                    # Premium Formatting (Exactly as per image_82ef0d.png)
-                    alert_text = (
-                        f"🏏 <b>IPL LIVE ODDS</b>\n"
-                        f"━━━━━━━━━━━━━━━\n\n"
-                        f"🏆 <b>{t1_name.upper()}</b>\n"
-                        f"└─ 💸 <b>ODDS: {t1_rate}</b>\n\n"
-                        f"🏆 <b>{t2_name.upper()}</b>\n"
-                        f"└─ 💸 <b>ODDS: {t2_rate}</b>\n\n"
-                        f"━━━━━━━━━━━━━━━\n"
-                        f"🕒 <i>Updated at: {time.strftime('%H:%M')}</i>"
-                    )
+                    current_match = f"{t1_name} vs {t2_name}"
 
-                    print(f"Update Sent: {t1_name} vs {t2_name}")
-                    send_telegram_msg(alert_text)
+                    # --- Check for Change ---
+                    # Agar match badal gaya ho (naya match) ya kisi bhi ek team ka rate badal gaya ho
+                    if (current_match != last_sent_data["match"] or
+                            t1_rate != last_sent_data["t1_rate"] or
+                            t2_rate != last_sent_data["t2_rate"]):
+
+                        # Update the Memory
+                        last_sent_data = {
+                            "match": current_match,
+                            "t1_rate": t1_rate,
+                            "t2_rate": t2_rate
+                        }
+
+                        # Premium Format Message
+                        alert_text = (
+                            f"🏏 <b>IPL LIVE ODDS</b>\n"
+                            f"━━━━━━━━━━━━━━━\n\n"
+                            f"🏆 <b>{t1_name.upper()}</b>\n"
+                            f"└─ 💸 <b>ODDS: {t1_rate}</b>\n\n"
+                            f"🏆 <b>{t2_name.upper()}</b>\n"
+                            f"└─ 💸 <b>ODDS: {t2_rate}</b>\n\n"
+                            f"━━━━━━━━━━━━━━━\n"
+                            f"🕒 <i>Updated at: {time.strftime('%H:%M:%S')}</i>"
+                        )
+
+                        send_telegram_msg(alert_text)
+                        print(f"Update Sent: {current_match} -> {t1_rate} | {t2_rate}")
+                    else:
+                        # Agar rate same hai toh sirf console pe print karega, Telegram nahi jayega
+                        print(f"Monitoring... No change in rates ({t1_rate} / {t2_rate})", end="\r")
+
                 else:
                     print("Match outcomes not found.")
 
             except Exception as e:
-                print(f"Error: {e}")
+                print(f"\nError: {e}")
 
-            # Har 10 second mein check
-            time.sleep(10)
+            # Rate check frequency (Stake ke liye 5-10 sec ideal hai)
+            time.sleep(5)
 
     except KeyboardInterrupt:
-        print("Script stopped.")
+        print("\nBot Stopped.")
     finally:
         driver.quit()
 
