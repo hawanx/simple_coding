@@ -25,17 +25,18 @@ def send_telegram_msg(message):
 def scrape_stake_rates():
     global last_sent_data
     options = uc.ChromeOptions()
-    driver = uc.Chrome(options=options)
+    driver = uc.Chrome(options=options, version_main=148, use_subprocess=True)
     url = "https://stake.ac/sports/cricket/india/indian-premier-league"
 
     try:
         driver.get(url)
         print("Bot is running... Monitoring for price changes.")
         time.sleep(10)
+        # WebDriverWait ko loop ke bahar ek hi baar define karein
+        wait = WebDriverWait(driver, 15)
 
         while True:
             try:
-                wait = WebDriverWait(driver, 15)
                 match_container = wait.until(
                     EC.presence_of_element_located((By.CSS_SELECTOR, 'div[data-testid="fixture-preview"]')))
                 buttons = match_container.find_elements(By.CSS_SELECTOR, 'button[data-testid="fixture-outcome"]')
